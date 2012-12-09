@@ -141,8 +141,14 @@ singult.coffee.render = (m) ->
     throw new Error("Unify must be the first and only child of its parent.")
   else if ignore_p m
     return null
-  else if string_p m #TODO: how to handle raw html?
-    return document.createTextNode m
+  else if string_p m
+    #Currently handling raw html by wrapping it in a div. Yields unexpected result.
+    div = document.createElement 'div'
+    div.innerHTML = m
+    if div.children.length > 0
+      return div
+    else
+      return document.createTextNode m
   else #it's a canonical map
     $e = document.createElementNS m.nsp, m.tag
     singult.coffee.attr $e, m.attr
